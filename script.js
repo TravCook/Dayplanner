@@ -1,6 +1,7 @@
 $(document).ready(function() {
 var dayDisplay = $("#currentDay")
 var timeBlocks = $(".container")
+var date = moment().format('llll');
 //UI is provided for this homework
 //we can build it in html and then have the data render in
 //GIVEN I am using a daily planner to create a schedule
@@ -20,19 +21,33 @@ var timeBlocks = $(".container")
 
 // create a function to write the current day out at the top of the page
 function currentDay(){
-  var date = moment().format('llll');
   dayDisplay.text(date)
 }
 currentDay();
 
-
+var hourComp = moment().format('H')
 // render out a time block for every hour of the day (24) 
 function hourRender(){
-  for(i=0;i<23;i++){
+  for(i=0;i<24;i++){
     var hourBlock = $("<div>")
-    hourBlock.addClass("")
+    hourBlock.addClass("time-block row hour textarea")
+    hourBlock.attr("hourStart", i)
+    hourBlock.attr("hourEnd", i+1)
+    
+    if(i < hourComp){
+      hourBlock.addClass("past")
+      timeBlocks.append(hourBlock)
+    }else if( i === hourComp){
+      hourBlock.addClass("present")
+      timeBlocks.append(hourBlock)
+    }else{
+      hourBlock.addClass("future")
+      timeBlocks.append(hourBlock)
+    }
   }
 }
+
+hourRender()
 
 // change styling of the timeblocks based on what time it currently is. (past, present, future)
 
