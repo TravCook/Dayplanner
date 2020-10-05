@@ -2,6 +2,8 @@ $(document).ready(function() {
 var dayDisplay = $("#currentDay")
 var timeBlocks = $(".container")
 var date = moment().format('llll');
+var hourBlock
+var schedData = []
 //UI is provided for this homework
 //we can build it in html and then have the data render in
 //GIVEN I am using a daily planner to create a schedule
@@ -24,16 +26,22 @@ function currentDay(){
   dayDisplay.text(date)
 }
 currentDay();
-
 var hourComp = moment().format('H')
 // render out a time block for every hour of the day (24) 
 function hourRender(){
   for(i=0;i<24;i++){
-    var hourBlock = $("<div>")
-    hourBlock.addClass("time-block row hour textarea")
+    hourBlock = $("<div>")
+    var saveButton = $("<button>")
+    var textArea = $("<textarea>")
+    saveButton.addClass("saveBtn")
+    saveButton.textContent = "SAVE";
+    textArea.attr("hourIdx", i)
+    hourBlock.addClass("row description time-block row hour")
     hourBlock.attr("hourStart", i)
     hourBlock.attr("hourEnd", i+1)
-    
+    hourBlock.append(saveButton)
+    hourBlock.append(textArea)
+
     if(i < hourComp){
       hourBlock.addClass("past")
       timeBlocks.append(hourBlock)
@@ -46,12 +54,26 @@ function hourRender(){
     }
   }
 }
-
 hourRender()
 
-// change styling of the timeblocks based on what time it currently is. (past, present, future)
+function textSave(event){
+  event.preventDefault();
+  var scheduleText = event.target.parentElement.lastChild.value.trim();
+  var hourNum = event.target.parentNode.attributes.hourstart.value;
+  var dataObj = { hourNum : scheduleText};
+  schedData.push(dataObj)
+  localStorage.setItem("Schedule", schedData)
+}
+
+function pageload(){
+ var data = localStorage.getItem("Schedule")
+  console.log(data)
+}
+pageload()
 
 
+
+$(".saveBtn").on("click", textSave)
 // create an on click event that lets a user save data inside of an hour block
 
 
